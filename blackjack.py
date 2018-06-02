@@ -40,10 +40,10 @@ def run_game():
         
     # Proposal to restart the game after its completion
     def reset_game():
-        reset = input("\n\n\t\tPlay again? (y/n)\n")
-        if reset == "y":
+        reset = input('\n\n\t\tPlay again? (y/n)\n')
+        if reset == 'y':
             run_game()
-        if reset == "n":
+        if reset == 'n':
             exit()
         
 
@@ -67,13 +67,13 @@ def run_game():
         player.append(card1_var)
         player.append(card2_var)
         
-        print("\t   Your cards: " + card1 + " and " + card2)
+        print('\t   Your cards: ' + card1 + ' and ' + card2)
         
         if card1_var == 1 and card2_var == 10 or card1_var == 10 and card2_var == 1:
-            print("\t----------------\n\t---BLACKJACK!---\n\t----------------\n\t--->YOU WIN!<---")
+            print('\t----------------\n\t---BLACKJACK!---\n\t----------------\n\t--->YOU WIN!<---')
             reset_game()
                     
-        print("\t   score: " + str(calc_score(player)))
+        print('\t   score: ' + str(calc_score(player)))
 
 
     # Settings for the dealer
@@ -87,13 +87,13 @@ def run_game():
         dealer.append(card3_var)
         dealer.append(card4_var)
       
-        print("\t   Dealer cards: " + card3 + " and |?|")
+        print('\t   Dealer cards: ' + card3 + ' and |?|')
         
         if card3_var == 1 and card4_var == 10 or card3_var == 10 and card4_var == 1:
-            print("\t----------------\n\t---BLACKJACK!---\n\t----------------\n\t--->YOU LOSE<---")
+            print('\t----------------\n\t---BLACKJACK!---\n\t----------------\n\t--->YOU LOSE<---')
             reset_game()
                 
-        print("\t   score: |?|")
+        print('\t   score: |?|')
             
             
     # Artificial Intelligence Dealer
@@ -112,8 +112,8 @@ def run_game():
            
     # Request for issuing an additional card
     def give_card():
-        hit = input("\n\t\tHit? (y/n)\n")
-        if hit == "y":
+        hit = input('\n\t\tHit? (y/n)\n')
+        if hit == 'y':
             if int(calc_score(player)) >= 12:
                 all_cards["|A|♣"] = 1
                 all_cards["|A|♦"] = 1
@@ -124,23 +124,23 @@ def run_game():
             card_hit = random.choice(cards)
             card_hit_rev = all_cards.get(card_hit)
             player.append(card_hit_rev)
-            print("\t   Hit: " + card_hit)
-            print("\t   score: " + str(calc_score(player)))
+            print('\t   Hit: ' + card_hit)
+            print('\t   score: ' + str(calc_score(player)))
             if int(calc_score(player)) > 21:
-                print("\t--->YOU LOSE<---")
+                print('\t--->YOU LOSE<---')
                 reset_game()
                 
             give_card()
 
-        elif hit == "n":
+        elif hit == 'n':
             if int(calc_score(player)) > int(calc_score(dealer)):
-                print("\t--->YOU WIN!<---")
+                print('\t--->YOU WIN!<---')
                 reset_game()
             elif int(calc_score(player)) < int(calc_score(dealer)):
-                print("\t   Dealer score: " + str(calc_score(dealer)) + "\n\t--->YOU LOSE<---")
+                print('\t   Dealer score: ' + str(calc_score(dealer)) + '\n\t--->YOU LOSE<---'')
                 reset_game()
             elif int(calc_score(player)) == int(calc_score(dealer)):
-                print("\t--->DRAW<---")
+                print('\t--->DRAW<---')
                 reset_game()
 
 
@@ -149,8 +149,8 @@ def run_game():
     give_card()
 
 
-start = input("\n\t\tStart the game? (y/n)\n")
-if start == "y":
+start = input('\n\t\tStart the game? (y/n)\n')
+if start == 'y':
     run_game()
-elif start == "n":
+elif start == 'n':
     exit()
