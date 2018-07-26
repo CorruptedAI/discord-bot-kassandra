@@ -129,8 +129,6 @@ def run_game():
             
             reset_game()
         print('\t   Dealer cards: ' + card3 + ' and |?|')
-                
-        print('\t   score: |?|')
             
             
     # Artificial intelligence of the dealer
@@ -139,6 +137,7 @@ def run_game():
             card_hit_dealer = random.choice(cards)
             card_hit_dealer_var = all_cards.get(card_hit_dealer)
             cards.remove(card_hit_dealer)
+            print('\t   and ' + card_hit_dealer)
             
             dealer.append(card_hit_dealer_var)
                 
