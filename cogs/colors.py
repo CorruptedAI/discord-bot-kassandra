@@ -25,7 +25,7 @@ class Color(commands.Cog):
             self.colors.append(c)
 
     @commands.command()
-    async def color(self, ctx):
+    async def colors(self, ctx):
         embed = self.update_ui('3..')
         msg = await ctx.channel.send(embed=embed)
         await msg.edit(embed=embed)
@@ -49,7 +49,7 @@ class Color(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.channel.send('You took too long. Your frame was closed.')
 
-        if checkin.content == color:
+        if checkin.content.lower() == color:
             await ctx.channel.send('Positive, {0.author.mention}!'.format(ctx))
         else:
             await ctx.channel.send('Probably not, {0.author.mention}.'.format(ctx))

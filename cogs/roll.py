@@ -10,7 +10,7 @@ class Roll(commands.Cog):
     @commands.command(pass_context=True)
     async def roll(self, ctx, *arg):
         if len(arg) != 1:
-            return await ctx.channel.send('I can take only one argument, {0.author.mention} D:'.format(ctx))
+            return await ctx.channel.send('Invalid argument :flushed:'.format(ctx))
         embed = discord.Embed(title=':game_die: ' + str(random.randint(1, int(arg[0]))), color=ctx.author.color)
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         await ctx.channel.send(embed=embed)

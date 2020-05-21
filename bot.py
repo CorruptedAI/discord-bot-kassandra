@@ -6,9 +6,8 @@ from discord.ext import commands
 
 INITIAL_EXTENSIONS = [
     'cogs.about',
-    'cogs.baccarat',
-    'cogs.blackjack',
-    'cogs.color',
+    'cogs.bj-bc',
+    'cogs.colors',
     'cogs.flip',
     'cogs.help',
     'cogs.moderation',

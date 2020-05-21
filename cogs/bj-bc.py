@@ -4,7 +4,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
-class Blackjack(commands.Cog):
+class Casino(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.DELAY = .8
@@ -28,8 +28,14 @@ class Blackjack(commands.Cog):
         self.HIT = '\U0001F1ED'
         self.STAND = '\U0001F1F8'
 
-    @commands.command(aliases=['bj'])
-    async def blackjack(self, ctx):
+    @commands.command(pass_context=True, aliases=['bj'])
+    async def blackjack(self, ctx, arg='help'):
+        if arg == 'help':
+            return await ctx.channel.send('help blackjack testing')
+        else:
+            # set bet
+            pass
+
         self.player = []
         self.dealer = []
         
@@ -54,10 +60,10 @@ class Blackjack(commands.Cog):
         def check_reaction(reaction, user):
             if str(reaction.emoji) == self.HIT:
                 self.hit_clicked = True
-                return user == ctx.author and str(reaction.emoji) == self.HIT
+                return user == ctx.author
             elif str(reaction.emoji) == self.STAND:
                 self.stand_clicked = True
-                return user == ctx.author and str(reaction.emoji) == self.STAND
+                return user == ctx.author
 
         # Game loop
         while True:
@@ -68,7 +74,6 @@ class Blackjack(commands.Cog):
                 reaction = await self.bot.wait_for('reaction_add', check=check_reaction, timeout=60.0)
             except asyncio.TimeoutError:
                 reaction = self.stand_clicked = True
-                #await ctx.channel.send('You took too long ,' + '{0.author.mention}'.format(ctx) + '. Your frame was closed.')
                 await ctx.channel.send('You took too long, {0.author.mention}. Your frame was closed.'.format(ctx))
 
             if reaction and self.hit_clicked:
@@ -93,9 +98,6 @@ class Blackjack(commands.Cog):
                 await asyncio.sleep(self.DELAY)
 
                 while self.get_score(self.dealer) < 17:
-                    #if self.get_score(self.player) < self.get_score(self.dealer):
-                    #    break
-
                     self.get_card(self.dealer)
                     self.embed = self.update_ui(ctx, 'Drawing...', True)
                     await self.msg.edit(embed=self.embed)
@@ -182,4 +184,4 @@ class Blackjack(commands.Cog):
             self.stop_flag = True
 
 def setup(bot):
-    bot.add_cog(Blackjack(bot))
+    bot.add_cog(Casino(bot))
