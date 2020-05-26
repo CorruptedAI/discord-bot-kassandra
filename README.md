@@ -9,7 +9,7 @@ The default command prefix is **`&`**. You can see the whole list of commands by
 - **Blackjack** [playing by emoji]
 - Baccarat *(coming soon)*
 - **Slots** [20 lines, 5 reels, wild symbol]
-- **Mini games** [coinflip, roll, russian roulette(coming soon), colors]
+- **Mini games** [coinflip, roll, russian roulette, colors]
 
 ## Running
 

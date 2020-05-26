@@ -14,6 +14,7 @@ INITIAL_EXTENSIONS = [
     'cogs.moderation',
     'cogs.ping',
     'cogs.roll',
+    'cogs.russian_roulette',
     'cogs.slots',
     'cogs.slots_highlighted'
 ]

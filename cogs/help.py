@@ -5,7 +5,7 @@ class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=['h'])
     async def help(self, ctx, arg='default'):
         embed = discord.Embed(title='Command prefix: `&`',
                               color=self.bot.user.color)
@@ -22,10 +22,10 @@ class Help(commands.Cog):
             embed.add_field(name='**About**', value='`about`', inline=True)
 
         elif arg == 'games':
-            embed.add_field(name='**Coinflip**\t\t\t\t\t', value='`flip`', inline=False)
+            embed.add_field(name='**Coinflip**', value='`flip`', inline=False)
             embed.add_field(name='**Roll Dice**', value='`roll n`', inline=False)
             embed.add_field(name='**Color Game**', value='`color`', inline=False)
-            embed.add_field(name='**Russian Roulette\t**', value='~~`roulette`~~', inline=False)
+            embed.add_field(name='**Russian Roulette**', value='`roulette` `roul`', inline=False)
             embed.add_field(name='**Blackjack**', value='`blackjack` `bj`', inline=False)
             embed.add_field(name='**Baccarat**', value='~~`baccarat`~~', inline=False)
             embed.add_field(name='**Slots**', value='`slots` `slot` `s`', inline=False)
