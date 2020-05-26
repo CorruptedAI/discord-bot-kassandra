@@ -1,18 +1,20 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import has_permissions
 
 class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(pass_context=True)
+    @has_permissions(administrator=True)
     async def clear(self, ctx, arg=1):
-       # if ctx.channel.server.me.server_permissions.administrator:
-       #     await ctx.channel.purge(limit=arg+1)
-       # else:
-       #     await ctx.channel.send('{0.author.mention}, you don\'t have permission for this command.'.format(ctx))
-        
         await ctx.channel.purge(limit=arg+1)
+
+    @clear.error
+    async def clear_error(self, error, ctx):
+        if isinstance(error, discord.ext.commands.errors.MissingPermissions):
+            await ctx.channel.send('You don\'t have permission to `clear`.')
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

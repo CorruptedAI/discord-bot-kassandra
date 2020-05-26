@@ -26,13 +26,14 @@ class Help(commands.Cog):
             embed.add_field(name='**Roll Dice**', value='`roll n`', inline=False)
             embed.add_field(name='**Color Game**', value='`color`', inline=False)
             embed.add_field(name='**Russian Roulette\t**', value='~~`roulette`~~', inline=False)
-            embed.add_field(name='**Blackjack**', value='`blackjack`', inline=False)
+            embed.add_field(name='**Blackjack**', value='`blackjack` `bj`', inline=False)
             embed.add_field(name='**Baccarat**', value='~~`baccarat`~~', inline=False)
-            embed.add_field(name='**Slots**', value='`slots`', inline=False)
+            embed.add_field(name='**Slots**', value='`slots` `slot` `s`', inline=False)
+            embed.add_field(name='**Slots With Highlighting**', value='`slotsh` `sloth` `sh`', inline=False)
 
         elif arg == 'util':
-            embed.add_field(name='**Change Prefix**', value='~~`prefix`~~', inline=False)
-            embed.add_field(name='**Clear**', value='`clear n`', inline=False)
+            embed.add_field(name='**Change Prefix**\n*[only for admins]*', value='~~`prefix`~~', inline=False)
+            embed.add_field(name='**Clear**\n*[only for admins]*', value='`clear n`', inline=False)
             embed.add_field(name='**Ping**', value='`ping`', inline=False)
 
         else:

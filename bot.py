@@ -6,14 +6,16 @@ from discord.ext import commands
 
 INITIAL_EXTENSIONS = [
     'cogs.about',
-    'cogs.bj-bc',
+    'cogs.baccarat',
+    'cogs.blackjack',
     'cogs.colors',
     'cogs.flip',
     'cogs.help',
     'cogs.moderation',
     'cogs.ping',
     'cogs.roll',
-    'cogs.slots'
+    'cogs.slots',
+    'cogs.slots_highlighted'
 ]
 
 COMMAND_PREFIX = '&'

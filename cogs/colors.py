@@ -56,7 +56,7 @@ class Color(commands.Cog):
 
     def update_ui(self, title_m):
         embed = discord.Embed(title=title_m, color=self.bot.user.color)
-        embed.set_author(name='Color Game', icon_url=self.bot.user.avatar_url)
+        embed.set_author(name='Colors Game', icon_url=self.bot.user.avatar_url)
         embed.set_footer(text='You must guess\nwhat color it is\nfaster than anyone')
         return embed
 

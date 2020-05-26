@@ -4,7 +4,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
-class Casino(commands.Cog):
+class Blackjack(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.DELAY = .8
@@ -60,10 +60,10 @@ class Casino(commands.Cog):
         def check_reaction(reaction, user):
             if str(reaction.emoji) == self.HIT:
                 self.hit_clicked = True
-                return user == ctx.author
+                return user == ctx.author and str(reaction.message) == str(self.msg)
             elif str(reaction.emoji) == self.STAND:
                 self.stand_clicked = True
-                return user == ctx.author
+                return user == ctx.author and str(reaction.message) == str(self.msg)
 
         # Game loop
         while True:
@@ -184,4 +184,4 @@ class Casino(commands.Cog):
             self.stop_flag = True
 
 def setup(bot):
-    bot.add_cog(Casino(bot))
+    bot.add_cog(Blackjack(bot))

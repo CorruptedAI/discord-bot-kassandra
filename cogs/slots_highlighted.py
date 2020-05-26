@@ -1,10 +1,10 @@
-﻿import random
+import random
 import asyncio
 
 import discord
 from discord.ext import commands
 
-class Slots(commands.Cog):
+class Slots_H(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -29,23 +29,25 @@ class Slots(commands.Cog):
         self.SPIN = '\U0001F1F8'
         self.COOKIE = ' \U0001F36A'
 
-    @commands.command(pass_context=True, aliases=['s', 'slot'])
-    async def slots(self, ctx, arg='help'):
+    @commands.command(pass_context=True, aliases=['sh', 'sloth'])
+    async def slotsh(self, ctx, arg='help'):
         if self.DETECT_DUPLICATE:
             return
         else:
             self.DETECT_DUPLICATE = True
 
         if arg == 'help':
-            return await ctx.channel.send('help slots testing')
+            return await ctx.channel.send('help slotsh testing')
         else:
             self.bet_value = int(arg)
 
+        self.highlighted = []
+
         self.lines = self.generate_line() + self.generate_line() + self.generate_line()
         self.embed = self.update_ui(ctx, True)
-        self.msg = await ctx.channel.send(embed=self.embed)
+        self.msg = await ctx.channel.send(self.show_reels(), embed=self.embed)
         await self.msg.add_reaction(self.SPIN)
-        await self.msg.edit(embed=self.embed)
+        await self.msg.edit(content=self.show_reels(), embed=self.embed)
 
         def check_reaction(reaction, user):
             return str(reaction.message) == str(self.msg) and user == ctx.author and str(reaction.emoji) == self.SPIN
@@ -58,20 +60,19 @@ class Slots(commands.Cog):
                 return 
 
             if reaction:
-                self.DELAY = .2
+                self.DELAY = .15
                 for i in range(3):
                     self.lines = self.generate_sequence()
                     self.embed = self.update_ui(ctx)
-                    await self.msg.edit(embed=self.embed)
+                    await self.msg.edit(content=self.show_reels(), embed=self.embed)
                     self.DELAY += self.DELAY/10
                     await asyncio.sleep(self.DELAY)
                 self.embed = self.update_ui(ctx, False, True)
-                await self.msg.edit(embed=self.embed)
+                await self.msg.edit(content=self.show_highlighted_reels(), embed=self.embed)
                 await self.msg.remove_reaction(self.SPIN, ctx.author)
 
     def update_ui(self, ctx_m, opening=False, ending=False):
-        embed = discord.Embed(title=self.show_reels(),
-                              color=ctx_m.author.color)
+        embed = discord.Embed(color=ctx_m.author.color)
         embed.set_author(name='Slots',
                          icon_url=ctx_m.author.avatar_url)
         embed.add_field(name='**BET**',
@@ -97,6 +98,24 @@ class Slots(commands.Cog):
         for i in range(5):
             line.append(random.choice(self.symbols))
         return line
+
+    def show_highlighted_reels(self):
+        space = '\n** ** '
+        beauty_lines = ''
+        inspace = '\u2060'
+        highlight = '`'
+
+        for i in self.highlighted:
+            if self.lines[i][0] != highlight:
+                self.lines[i] = highlight + self.lines[i] + highlight + inspace
+
+        for i in range(15):
+            if i % 5 == 0:
+                beauty_lines += space
+            beauty_lines += self.lines[i]
+
+        del self.highlighted[:]
+        return beauty_lines
 
     def show_reels(self):
         space = '\n** ** '
@@ -135,10 +154,13 @@ class Slots(commands.Cog):
             if self.lines[reel3] == self.lines[reel4]:
                 if self.lines[reel4] == self.lines[reel5]:
                     result += self.symbols_dict.get(self.lines[symbol_main])[2]
+                    self.highlighted.extend([reel1, reel2, reel3, reel4, reel5])
                 else:
                     result += self.symbols_dict.get(self.lines[symbol_main])[1]
+                    self.highlighted.extend([reel1, reel2, reel3, reel4])
             else:
                 result += self.symbols_dict.get(self.lines[symbol_main])[0]
+                self.highlighted.extend([reel1, reel2, reel3])
 
         self.lines = lines_copy
 
@@ -172,4 +194,4 @@ class Slots(commands.Cog):
         return result
 
 def setup(bot):
-    bot.add_cog(Slots(bot))
+    bot.add_cog(Slots_H(bot))
