@@ -10,17 +10,17 @@ The default command prefix is **`&`**. You can see the whole list of commands by
 - **Mini games** [coinflip, roll, russian roulette, colors]
 
 ### Future plans
-4. Economy
 1. Baccarat
 2. More basic moderation commands
 3. Some utilities and fun stuff
+4. Economy
 5. Text and voice based Mafia
 6. More mini games
 
 ### Upcoming changes
 - rebuild architecture of bj and slots to add flexible in-game customization
-- more on_error
-- setup freeze/virtal env
+- more *on_error*
+- setup freeze/virtual env
 - doc for each command (gitwiki/website)
 
 ## Running
