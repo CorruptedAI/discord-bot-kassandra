@@ -29,13 +29,7 @@ class Blackjack(commands.Cog):
         self.STAND = '\U0001F1F8'
 
     @commands.command(pass_context=True, aliases=['bj'])
-    async def blackjack(self, ctx, arg='help'):
-        if arg == 'help':
-            return await ctx.channel.send('help blackjack testing')
-        else:
-            # set bet
-            pass
-
+    async def blackjack(self, ctx):
         self.player = []
         self.dealer = []
         

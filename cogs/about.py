@@ -15,7 +15,6 @@ Hi, I'm Kassandra, my father is **Ghosteon#2776**. I was created to bring pleasu
 father said that he was just testing the Discord API and remaking his old mini project... In any case, I'm
 glad that I can be with you, you can use me whenever you want! Just send ***&help*** and I will show
 you all my commands.
-By the way, I have open source. You can see it here github.com/Ghosteon/discord-bot-kassandra
             ''')
         await ctx.channel.send(embed=embed)
 

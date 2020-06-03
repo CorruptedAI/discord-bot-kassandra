@@ -16,13 +16,13 @@ class Russian_Roulette(commands.Cog):
         await msg.edit(content='The trigger is pulled')
         await asyncio.sleep(self.DELAY*2)
         if random.randint(1, 6) == 1:
-            await msg.edit(content='The trigger is pulled, and the revolver clicks.')
-            await asyncio.sleep(self.DELAY)
-            await msg.edit(content='The trigger is pulled, and the revolver clicks. {0.author.mention} lies dead in chat.'.format(ctx))
-        else:
             await msg.edit(content='The trigger is pulled, and the revolver fires!')
             await asyncio.sleep(self.DELAY)
-            await msg.edit(content='The trigger is pulled, and the revolver fires! {0.author.mention} has lived to survive roulette!'.format(ctx))
+            await msg.edit(content='The trigger is pulled, and the revolver fires! {0.author.mention} lies dead in chat.'.format(ctx))
+        else:
+            await msg.edit(content='The trigger is pulled, and the revolver clicks.')
+            await asyncio.sleep(self.DELAY)
+            await msg.edit(content='The trigger is pulled, and the revolver clicks. {0.author.mention} has lived to survive roulette!'.format(ctx))
 
 
 def setup(bot):

@@ -15,8 +15,7 @@ INITIAL_EXTENSIONS = [
     'cogs.ping',
     'cogs.roll',
     'cogs.russian_roulette',
-    'cogs.slots',
-    'cogs.slots_highlighted'
+    'cogs.slots'
 ]
 
 COMMAND_PREFIX = '&'
@@ -43,6 +42,7 @@ class Kassandra(commands.Bot):
                 print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
 
     async def on_ready(self):
+        await self.change_presence(activity=discord.Game(name=COMMAND_PREFIX+'help'))
         print('Username: ' + self.user.name)
         print('ID: ' + str(self.user.id))
         print('-----------------------')

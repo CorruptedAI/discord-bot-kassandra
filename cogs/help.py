@@ -8,34 +8,36 @@ class Help(commands.Cog):
     @commands.command(pass_context=True, aliases=['h'])
     async def help(self, ctx, arg='default'):
         embed = discord.Embed(title='Command prefix: `&`',
+                              description='Use &help [command] for get more information',
                               color=self.bot.user.color)
 
         embed.set_author(name='Help', icon_url=self.bot.user.avatar_url)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
 
         if arg == 'default':
-            embed.add_field(name='**Games**', value='`help games`', inline=True)
-            embed.add_field(name='**Stats**', value='~~`stats @n`~~', inline=True)
-            embed.add_field(name='**Balance**', value='~~`balance`~~', inline=True)
-            embed.add_field(name='**Daily Bonus**', value='~~`daily`~~', inline=True)
-            embed.add_field(name='**Utilities**', value='`help util`', inline=True)
-            embed.add_field(name='**About**', value='`about`', inline=True)
+            embed.add_field(name='**Games**',
+                            value='`blackjack` `baccarat` `slots` ~~`mafia`~~', 
+                            inline=True)
 
-        elif arg == 'games':
-            embed.add_field(name='**Coinflip**', value='`flip`', inline=False)
-            embed.add_field(name='**Roll Dice**', value='`roll n`', inline=False)
-            embed.add_field(name='**Color Game**', value='`color`', inline=False)
-            embed.add_field(name='**Russian Roulette**', value='`roulette` `roul`', inline=False)
-            embed.add_field(name='**Blackjack**', value='`blackjack` `bj`', inline=False)
-            embed.add_field(name='**Baccarat**', value='~~`baccarat`~~', inline=False)
-            embed.add_field(name='**Slots**', value='`slots` `slot` `s`', inline=False)
-            embed.add_field(name='**Slots With Highlighting**', value='`slotsh` `sloth` `sh`', inline=False)
+            embed.add_field(name='**Fun**',
+                            value='`flip` `roll` `roulette` `colors` ~~`oracle`~~ ~~`spacex`~~', 
+                            inline=True)
 
-        elif arg == 'util':
-            embed.add_field(name='**Change Prefix**\n*[only for admins]*', value='~~`prefix`~~', inline=False)
-            embed.add_field(name='**Clear**\n*[only for admins]*', value='`clear n`', inline=False)
-            embed.add_field(name='**Ping**', value='`ping`', inline=False)
+            embed.add_field(name='**Economy**',
+                            value='~~`balance`~~ ~~`daily`~~ ~~`shop`~~ ~~`stats`~~',
+                            inline=True)
 
+            embed.add_field(name='**Information**',
+                            value='~~`info`~~ ~~`avatar`~~ ~~`server`~~ ~~`channel`~~ `about`',
+                            inline=True)
+
+            embed.add_field(name='**Utilities**',
+                            value='~~`weather`~~ ~~`remind`~~ ~~`invite`~~ `ping`',
+                            inline=True)
+
+            embed.add_field(name='**Moderation**\n[for admins only]',
+                            value='`clear` ~~`kick`~~ ~~`ban`~~', '~~`unban`~~',
+                            inline=True)
         else:
             embed.add_field(name='**Invalid argument** :flushed:', value='Try **`&help`**', inline=False)
 

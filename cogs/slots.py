@@ -1,4 +1,4 @@
-﻿import random
+import random
 import asyncio
 
 import discord
@@ -9,7 +9,7 @@ class Slots(commands.Cog):
         self.bot = bot
 
         self.symbols_dict = {
-                   '\U0001F34A': [0.5, 1.5,  3.5],      # :tangerine:
+                   '\U0001F34C': [0.5, 1.5,  3.5],      # :banana:
                    '\U0001F347': [0.5, 1.5,  4.0],      # :grapes:
                    '\U0001F352': [0.5, 2.0,  5.0],      # :cherries:
                    '\U0001F34B': [0.5, 2.5,  6.5],      # :lemon:
@@ -18,7 +18,7 @@ class Slots(commands.Cog):
                    '\U0001F353': [3.0, 15.0, 60.0],     # :strawberry:
                    '\U0001F351': [4.0, 25.0, 80.0],     # :peach:
                    '\U0001F48E': [0]         # wild     # :gem:         
-                   }
+        }
 
         self.symbols = []
         for symbol in self.symbols_dict:
@@ -30,16 +30,13 @@ class Slots(commands.Cog):
         self.COOKIE = ' \U0001F36A'
 
     @commands.command(pass_context=True, aliases=['s', 'slot'])
-    async def slots(self, ctx, arg='help'):
+    async def slots(self, ctx):
         if self.DETECT_DUPLICATE:
             return
         else:
             self.DETECT_DUPLICATE = True
 
-        if arg == 'help':
-            return await ctx.channel.send('help slots testing')
-        else:
-            self.bet_value = int(arg)
+        self.highlighted = []
 
         self.lines = self.generate_line() + self.generate_line() + self.generate_line()
         self.embed = self.update_ui(ctx, True)
@@ -58,7 +55,7 @@ class Slots(commands.Cog):
                 return 
 
             if reaction:
-                self.DELAY = .2
+                self.DELAY = .15
                 for i in range(3):
                     self.lines = self.generate_sequence()
                     self.embed = self.update_ui(ctx)
@@ -74,21 +71,18 @@ class Slots(commands.Cog):
                               color=ctx_m.author.color)
         embed.set_author(name='Slots',
                          icon_url=ctx_m.author.avatar_url)
-        embed.add_field(name='**BET**',
-                        value=self.bet_value,
-                        inline=True)
-        embed.add_field(name='**BALANCE**',
-                        value='soon',
-                        inline=True)
         if opening:
             embed.set_footer(text='Press S\nto spin',
                              icon_url=self.bot.user.avatar_url)
         else:
             if ending:
-                embed.set_footer(text='WIN\n ' + str(round(self.bet_value*self.get_multiplier())) + self.COOKIE,
+                embed.set_footer(text='WIN\n ' + str(self.get_multiplier()) + 'x',
                                  icon_url=self.bot.user.avatar_url)
+                embed.title=self.show_highlighted_reels()
+                for i, n in enumerate(self.lines):
+                    self.lines[i] = self.lines[i].replace('`', '')
             else:
-                embed.set_footer(text='WIN\n 0' + self.COOKIE,
+                embed.set_footer(text='WIN\n 0x',
                                  icon_url=self.bot.user.avatar_url)
         return embed
 
@@ -98,14 +92,37 @@ class Slots(commands.Cog):
             line.append(random.choice(self.symbols))
         return line
 
-    def show_reels(self):
+    def show_highlighted_reels(self):
         space = '\n** ** '
         beauty_lines = ''
+        inspace = '\u2060'
+        highlight = '`'
+        breaker = '  '
+
+        for i in self.highlighted:
+            if self.lines[i][0] != highlight:
+                self.lines[i] = highlight + self.lines[i] + highlight + inspace
 
         for i in range(15):
             if i % 5 == 0:
                 beauty_lines += space
-            beauty_lines += self.lines[i]
+            if self.lines[i][0] == highlight:
+                beauty_lines += self.lines[i]
+            else:
+                beauty_lines += self.lines[i] + breaker
+
+        del self.highlighted[:]
+        return beauty_lines
+
+    def show_reels(self):
+        space = '\n** ** '
+        beauty_lines = ''
+        breaker = '  '
+
+        for i in range(15):
+            if i % 5 == 0:
+                beauty_lines += space
+            beauty_lines += self.lines[i] + breaker
 
         return beauty_lines
 
@@ -135,10 +152,13 @@ class Slots(commands.Cog):
             if self.lines[reel3] == self.lines[reel4]:
                 if self.lines[reel4] == self.lines[reel5]:
                     result += self.symbols_dict.get(self.lines[symbol_main])[2]
+                    self.highlighted.extend([reel1, reel2, reel3, reel4, reel5])
                 else:
                     result += self.symbols_dict.get(self.lines[symbol_main])[1]
+                    self.highlighted.extend([reel1, reel2, reel3, reel4])
             else:
                 result += self.symbols_dict.get(self.lines[symbol_main])[0]
+                self.highlighted.extend([reel1, reel2, reel3])
 
         self.lines = lines_copy
 
