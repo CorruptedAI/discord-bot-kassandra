@@ -22,18 +22,20 @@ class Weather(commands.Cog):
         embed = discord.Embed(title=thunder['name'],
                               description='**' + thunder['weather'][0]['description'].title() + '**',
                               color=self.bot.user.color)
-        embed.set_author(name='Weather', icon_url=self.bot.user.avatar_url)
-        embed.add_field(name='Temp',
-                        value=str(round(thunder['main']['temp']-273.15, 1)) + '°C',
-                        inline=False)
-        embed.add_field(name='Feels like',
-                        value=str(round(thunder['main']['feels_like']-273.15, 1)) + '°C',
-                        inline=False)
+        embed.add_field(name='Temperature',
+                        value=str(round(thunder['main']['temp']-273.15, 1)) + ' °C',
+                        inline=True)
+        embed.add_field(name='Temperature',
+                        value=str(round((thunder['main']['temp']-273.15)*9/5+32, 1)) + ' °F',
+                        inline=True)
         embed.add_field(name='Humidity',
-                        value=str(thunder['main']['humidity']) + '%',
+                        value=str(thunder['main']['humidity']) + ' %',
+                        inline=False)
+        embed.add_field(name='Pressure',
+                        value=str(thunder['main']['pressure']) + ' hpa',
                         inline=False)
         embed.add_field(name='Wind',
-                        value=str(thunder['wind']['speed']) + ' km/h',
+                        value=str(thunder['wind']['speed']) + ' m/s',
                         inline=False)
         embed.set_footer(text=datetime.now().strftime("%H:%M:%S\n%d.%m.%Y "),
                          icon_url=self.bot.user.avatar_url)
