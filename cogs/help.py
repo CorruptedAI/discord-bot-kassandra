@@ -16,27 +16,32 @@ class Help(commands.Cog):
 
         if arg == 'default':
             embed.add_field(name='**Games**',
-                            value='`blackjack` `baccarat` `slots` ~~`mafia`~~', 
+                            #value='`blackjack` `baccarat` `slots` `mafia`', 
+                            value='`blackjack` `slots`', 
                             inline=True)
 
             embed.add_field(name='**Fun**',
-                            value='`flip` `roll` `roulette` `colors` ~~`oracle`~~ ~~`spacex`~~', 
+                            value='`flip` `roll` `roulette` `colors` `m8b` `spacex`', 
                             inline=True)
 
             embed.add_field(name='**Economy**',
-                            value='~~`balance`~~ ~~`daily`~~ ~~`shop`~~ ~~`stats`~~',
+                            #value='`balance` `daily` `shop` `stats`',
+                            value='soon',
                             inline=True)
 
             embed.add_field(name='**Information**',
-                            value='~~`info`~~ ~~`avatar`~~ ~~`server`~~ ~~`channel`~~ `about`',
+                            #value='`info` `avatar` `server` `channel` `about`',
+                            value='`about`',
                             inline=True)
 
             embed.add_field(name='**Utilities**',
-                            value='~~`weather`~~ ~~`remind`~~ ~~`invite`~~ `ping`',
+                            #value='`weather` `remind` `invite` `ping`',
+                            value='`weather` `invite` `ping`',
                             inline=True)
 
             embed.add_field(name='**Moderation**\n[for admins only]',
-                            value='`clear` ~~`kick`~~ ~~`ban`~~', '~~`unban`~~',
+                            #value='`clear` `kick` `ban` `unban`',
+                            value='`clear`',
                             inline=True)
         else:
             embed.add_field(name='**Invalid argument** :flushed:', value='Try **`&help`**', inline=False)
