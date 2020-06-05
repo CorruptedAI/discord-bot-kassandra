@@ -30,6 +30,9 @@ class Blackjack(commands.Cog):
 
     @commands.command(pass_context=True, aliases=['bj'])
     async def blackjack(self, ctx):
+        if not ctx.guild:
+            return await ctx.channel.send('Sorry, but you can\'t use this command in DM now. It crashes bot and causes errors. Upcoming update let you do that.')
+
         self.player = []
         self.dealer = []
         

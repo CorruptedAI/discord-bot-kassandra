@@ -15,6 +15,10 @@ class Weather(commands.Cog):
             return await ctx.channel.send('{0.author.mention}, you forgot to specify the city, try `&weather [city]`'.format(ctx))
 
         thunder = requests.get(self.api + arg).json()
+
+        if thunder['cod'] == '404':
+            return await ctx.channel.send('{0.author.mention}, I couldn\'t find this city :flushed:'.format(ctx))
+
         embed = discord.Embed(title=thunder['name'],
                               description='**' + thunder['weather'][0]['description'].title() + '**',
                               color=self.bot.user.color)

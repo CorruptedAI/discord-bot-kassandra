@@ -31,6 +31,9 @@ class Slots(commands.Cog):
 
     @commands.command(pass_context=True, aliases=['s', 'slot'])
     async def slots(self, ctx):
+        if not ctx.guild:
+            return await ctx.channel.send('Sorry, but you can\'t use this command in DM now. It crashes bot and causes errors. Upcoming update let you do that.')
+
         if self.DETECT_DUPLICATE:
             return
         else:
