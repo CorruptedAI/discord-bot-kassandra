@@ -4,20 +4,21 @@ import asyncio
 import discord
 from discord.ext import commands
 
+
 class Slots(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
         self.symbols_dict = {
-                   '\U0001F34C': [0.5, 1.5,  3.5],      # :banana:
-                   '\U0001F347': [0.5, 1.5,  4.0],      # :grapes:
-                   '\U0001F352': [0.5, 2.0,  5.0],      # :cherries:
-                   '\U0001F34B': [0.5, 2.5,  6.5],      # :lemon:
-                   '\U0001F349': [1.5, 5.0,  20.0],     # :watermelon:
-                   '\U0001F95D': [2.0, 8.0,  35.0],     # :kiwi:
-                   '\U0001F353': [3.0, 15.0, 60.0],     # :strawberry:
-                   '\U0001F351': [4.0, 25.0, 80.0],     # :peach:
-                   '\U0001F48E': [0]         # wild     # :gem:         
+            "\U0001F34C": [0.5, 1.5, 3.5],  # :banana:
+            "\U0001F347": [0.5, 1.5, 4.0],  # :grapes:
+            "\U0001F352": [0.5, 2.0, 5.0],  # :cherries:
+            "\U0001F34B": [0.5, 2.5, 6.5],  # :lemon:
+            "\U0001F349": [1.5, 5.0, 20.0],  # :watermelon:
+            "\U0001F95D": [2.0, 8.0, 35.0],  # :kiwi:
+            "\U0001F353": [3.0, 15.0, 60.0],  # :strawberry:
+            "\U0001F351": [4.0, 25.0, 80.0],  # :peach:
+            "\U0001F48E": [0],  # wild     # :gem:
         }
 
         self.symbols = []
@@ -26,13 +27,15 @@ class Slots(commands.Cog):
 
         self.DETECT_DUPLICATE = False
 
-        self.SPIN = '\U0001F1F8'
-        self.COOKIE = ' \U0001F36A'
+        self.SPIN = "\U0001F1F8"
+        self.COOKIE = " \U0001F36A"
 
-    @commands.command(pass_context=True, aliases=['s', 'slot'])
+    @commands.command(pass_context=True, aliases=["s", "slot"])
     async def slots(self, ctx):
         if not ctx.guild:
-            return await ctx.channel.send('Sorry, but you can\'t use this command in DM now. It crashes bot and causes errors. Upcoming update let you do that.')
+            return await ctx.channel.send(
+                "Sorry, but you can't use this command in DM now. It crashes bot and causes errors. Upcoming update let you do that."
+            )
 
         if self.DETECT_DUPLICATE:
             return
@@ -48,45 +51,49 @@ class Slots(commands.Cog):
         await self.msg.edit(embed=self.embed)
 
         def check_reaction(reaction, user):
-            return str(reaction.message) == str(self.msg) and user == ctx.author and str(reaction.emoji) == self.SPIN
+            return (
+                str(reaction.message) == str(self.msg)
+                and user == ctx.author
+                and str(reaction.emoji) == self.SPIN
+            )
 
         while True:
             try:
-                reaction = await self.bot.wait_for('reaction_add', check=check_reaction, timeout=90.0)
+                reaction = await self.bot.wait_for(
+                    "reaction_add", check=check_reaction, timeout=90.0
+                )
             except asyncio.TimeoutError:
                 self.DETECT_DUPLICATE = False
-                return 
+                return
 
             if reaction:
-                self.DELAY = .15
+                self.DELAY = 0.15
                 for i in range(3):
                     self.lines = self.generate_sequence()
                     self.embed = self.update_ui(ctx)
                     await self.msg.edit(embed=self.embed)
-                    self.DELAY += self.DELAY/10
+                    self.DELAY += self.DELAY / 10
                     await asyncio.sleep(self.DELAY)
                 self.embed = self.update_ui(ctx, False, True)
                 await self.msg.edit(embed=self.embed)
                 await self.msg.remove_reaction(self.SPIN, ctx.author)
 
     def update_ui(self, ctx_m, opening=False, ending=False):
-        embed = discord.Embed(title=self.show_reels(),
-                              color=ctx_m.author.color)
-        embed.set_author(name='Slots',
-                         icon_url=ctx_m.author.avatar_url)
+        embed = discord.Embed(title=self.show_reels(), color=ctx_m.author.color)
+        embed.set_author(name="Slots", icon_url=ctx_m.author.avatar_url)
         if opening:
-            embed.set_footer(text='Press S\nto spin',
-                             icon_url=self.bot.user.avatar_url)
+            embed.set_footer(text="Press S\nto spin", icon_url=self.bot.user.avatar_url)
         else:
             if ending:
-                embed.set_footer(text='WIN\n ' + str(self.get_multiplier()) + 'x',
-                                 icon_url=self.bot.user.avatar_url)
-                embed.title=self.show_highlighted_reels()
+                embed.set_footer(
+                    text="WIN\n " + str(self.get_multiplier()) + "x",
+                    icon_url=self.bot.user.avatar_url,
+                )
+                embed.title = self.show_highlighted_reels()
                 for i, n in enumerate(self.lines):
-                    self.lines[i] = self.lines[i].replace('`', '')
+                    self.lines[i] = self.lines[i].replace("`", "")
             else:
-                embed.set_footer(text='WIN\n 0x',
-                                 icon_url=self.bot.user.avatar_url)
+                embed.set_footer(text="WIN\n 0x", icon_url=self.bot.user.avatar_url)
         return embed
 
     def generate_line(self):
@@ -96,11 +103,11 @@ class Slots(commands.Cog):
         return line
 
     def show_highlighted_reels(self):
-        space = '\n** ** '
-        beauty_lines = ''
-        inspace = '\u2060'
-        highlight = '`'
-        breaker = '  '
+        space = "\n** ** "
+        beauty_lines = ""
+        inspace = "\u2060"
+        highlight = "`"
+        breaker = "  "
 
         for i in self.highlighted:
             if self.lines[i][0] != highlight:
@@ -118,9 +125,9 @@ class Slots(commands.Cog):
         return beauty_lines
 
     def show_reels(self):
-        space = '\n** ** '
-        beauty_lines = ''
-        breaker = '  '
+        space = "\n** ** "
+        beauty_lines = ""
+        breaker = "  "
 
         for i in range(15):
             if i % 5 == 0:
@@ -135,10 +142,10 @@ class Slots(commands.Cog):
 
     def check_line(self, reel1, reel2, reel3, reel4, reel5):
         result = 0
-        symbol_main = ''
+        symbol_main = ""
         lines_copy = self.lines.copy()
         wild_score = 0
-        wild_symbol = ''
+        wild_symbol = ""
 
         for n in [reel1, reel2, reel3, reel4, reel5]:
             if self.lines[n] != self.symbols[8]:
@@ -148,7 +155,7 @@ class Slots(commands.Cog):
 
         for n in [reel1, reel2, reel3, reel4, reel5]:
             if self.lines[n] == self.symbols[8]:
-                #wild_score += 5
+                # wild_score += 5
                 self.lines[n] = wild_symbol
 
         if self.lines[reel1] == self.lines[reel2] == self.lines[reel3]:
@@ -166,7 +173,7 @@ class Slots(commands.Cog):
         self.lines = lines_copy
 
         return result + wild_score
-    
+
     def get_multiplier(self):
         result = self.check_line(0, 1, 2, 3, 4)
         result += self.check_line(0, 6, 12, 8, 4)
@@ -193,6 +200,7 @@ class Slots(commands.Cog):
         result += self.check_line(10, 11, 2, 13, 14)
 
         return result
+
 
 def setup(bot):
     bot.add_cog(Slots(bot))

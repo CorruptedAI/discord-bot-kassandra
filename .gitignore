@@ -1,5 +1,5 @@
-.vs/*
-__pycache__/*
-cogs/__pycache__/*
-.env
+tokens
+__pycache__
 run.bat
+
+.env

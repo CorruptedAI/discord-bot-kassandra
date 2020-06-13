@@ -4,38 +4,80 @@ import asyncio
 import discord
 from discord.ext import commands
 
+
 class Blackjack(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.DELAY = .8
+        self.DELAY = 0.8
 
         self.deck_list = {
-            '2♣': 2,   '2♦': 2,   '2♥': 2,   '2♠': 2,
-            '3♣': 3,   '3♦': 3,   '3♥': 3,   '3♠': 3,
-            '4♣': 4,   '4♦': 4,   '4♥': 4,   '4♠': 4,
-            '5♣': 5,   '5♦': 5,   '5♥': 5,   '5♠': 5,
-            '6♣': 6,   '6♦': 6,   '6♥': 6,   '6♠': 6,
-            '7♣': 7,   '7♦': 7,   '7♥': 7,   '7♠': 7,
-            '8♣': 8,   '8♦': 8,   '8♥': 8,   '8♠': 8,
-            '9♣': 9,   '9♦': 9,   '9♥': 9,   '9♠': 9,
-            '10♣': 10, '10♦': 10, '10♥': 10, '10♠': 10,
-            'J♣': 10,  'J♦': 10,  'J♥': 10,  'J♠': 10,
-            'Q♣': 10,  'Q♦': 10,  'Q♥': 10,  'Q♠': 10,
-            'K♣': 10,  'K♦': 10,  'K♥': 10,  'K♠': 10,
-            'A♣': 11,  'A♦': 11,  'A♥': 11,  'A♠': 11
+            "2♣": 2,
+            "2♦": 2,
+            "2♥": 2,
+            "2♠": 2,
+            "3♣": 3,
+            "3♦": 3,
+            "3♥": 3,
+            "3♠": 3,
+            "4♣": 4,
+            "4♦": 4,
+            "4♥": 4,
+            "4♠": 4,
+            "5♣": 5,
+            "5♦": 5,
+            "5♥": 5,
+            "5♠": 5,
+            "6♣": 6,
+            "6♦": 6,
+            "6♥": 6,
+            "6♠": 6,
+            "7♣": 7,
+            "7♦": 7,
+            "7♥": 7,
+            "7♠": 7,
+            "8♣": 8,
+            "8♦": 8,
+            "8♥": 8,
+            "8♠": 8,
+            "9♣": 9,
+            "9♦": 9,
+            "9♥": 9,
+            "9♠": 9,
+            "10♣": 10,
+            "10♦": 10,
+            "10♥": 10,
+            "10♠": 10,
+            "J♣": 10,
+            "J♦": 10,
+            "J♥": 10,
+            "J♠": 10,
+            "Q♣": 10,
+            "Q♦": 10,
+            "Q♥": 10,
+            "Q♠": 10,
+            "K♣": 10,
+            "K♦": 10,
+            "K♥": 10,
+            "K♠": 10,
+            "A♣": 11,
+            "A♦": 11,
+            "A♥": 11,
+            "A♠": 11,
         }
 
-        self.HIT = '\U0001F1ED'
-        self.STAND = '\U0001F1F8'
+        self.HIT = "\U0001F1ED"
+        self.STAND = "\U0001F1F8"
 
-    @commands.command(pass_context=True, aliases=['bj'])
+    @commands.command(pass_context=True, aliases=["bj"])
     async def blackjack(self, ctx):
         if not ctx.guild:
-            return await ctx.channel.send('Sorry, but you can\'t use this command in DM now. It crashes bot and causes errors. Upcoming update let you do that.')
+            return await ctx.channel.send(
+                "Sorry, but you can't use this command in DM now. It crashes bot and causes errors. Upcoming update let you do that."
+            )
 
         self.player = []
         self.dealer = []
-        
+
         self.deck = []
         for card in self.deck_list:
             self.deck.append(card)
@@ -68,10 +110,16 @@ class Blackjack(commands.Cog):
                 break
 
             try:
-                reaction = await self.bot.wait_for('reaction_add', check=check_reaction, timeout=60.0)
+                reaction = await self.bot.wait_for(
+                    "reaction_add", check=check_reaction, timeout=60.0
+                )
             except asyncio.TimeoutError:
                 reaction = self.stand_clicked = True
-                await ctx.channel.send('You took too long, {0.author.mention}. Your frame was closed.'.format(ctx))
+                await ctx.channel.send(
+                    "You took too long, {0.author.mention}. Your frame was closed.".format(
+                        ctx
+                    )
+                )
 
             if reaction and self.hit_clicked:
                 self.hit_clicked = False
@@ -81,7 +129,7 @@ class Blackjack(commands.Cog):
                 await self.msg.edit(embed=self.embed)
 
                 if self.check_edge(self.player):
-                    self.embed = self.update_ui(ctx, 'BUST', True)
+                    self.embed = self.update_ui(ctx, "BUST", True)
                     await self.msg.edit(embed=self.embed)
                     break
 
@@ -90,18 +138,18 @@ class Blackjack(commands.Cog):
             elif reaction and self.stand_clicked:
                 self.stand_clicked = False
 
-                self.embed = self.update_ui(ctx, 'Dealer\'s hand', True)
+                self.embed = self.update_ui(ctx, "Dealer's hand", True)
                 await self.msg.edit(embed=self.embed)
                 await asyncio.sleep(self.DELAY)
 
                 while self.get_score(self.dealer) < 17:
                     self.get_card(self.dealer)
-                    self.embed = self.update_ui(ctx, 'Drawing...', True)
+                    self.embed = self.update_ui(ctx, "Drawing...", True)
                     await self.msg.edit(embed=self.embed)
                     await asyncio.sleep(self.DELAY)
 
                 if self.check_edge(self.dealer):
-                    self.embed = self.update_ui(ctx, 'WIN', True)
+                    self.embed = self.update_ui(ctx, "WIN", True)
                     await self.msg.edit(embed=self.embed)
                     break
 
@@ -119,7 +167,7 @@ class Blackjack(commands.Cog):
         if not ra9:
             return str(self.deck_list.get(user[0]))
 
-        deck_score = [] 
+        deck_score = []
         for n in user:
             deck_score.append(self.deck_list.get(n))
 
@@ -127,26 +175,28 @@ class Blackjack(commands.Cog):
             for i, n in enumerate(deck_score):
                 if deck_score[i] == 11:
                     deck_score[i] = 1
-        
+
         return sum(deck_score)
 
     def show_cards(self, user, ra9=True):
         if ra9:
-            return ' '.join('`' + item + '`' for item in user)
-        return '`' + user[0] + '` `?`'
+            return " ".join("`" + item + "`" for item in user)
+        return "`" + user[0] + "` `?`"
 
-    def update_ui(self, ctx_m, footer_m='Would you like\nto stand on it?', ra9=False):
+    def update_ui(self, ctx_m, footer_m="Would you like\nto stand on it?", ra9=False):
         embed = discord.Embed(color=ctx_m.author.color)
-        embed.set_author(name='Blackjack',
-                         icon_url=ctx_m.author.avatar_url)
-        embed.set_footer(text=footer_m,
-                         icon_url=self.bot.user.avatar_url)
-        embed.add_field(name='Your score: **' + str(self.get_score(self.player)) + '**',
-                        value=self.show_cards(self.player),
-                        inline=False)
-        embed.add_field(name='Dealer score: **' + str(self.get_score(self.dealer, ra9)) + '**',
-                        value=self.show_cards(self.dealer, ra9),
-                        inline=False)
+        embed.set_author(name="Blackjack", icon_url=ctx_m.author.avatar_url)
+        embed.set_footer(text=footer_m, icon_url=self.bot.user.avatar_url)
+        embed.add_field(
+            name="Your score: **" + str(self.get_score(self.player)) + "**",
+            value=self.show_cards(self.player),
+            inline=False,
+        )
+        embed.add_field(
+            name="Dealer score: **" + str(self.get_score(self.dealer, ra9)) + "**",
+            value=self.show_cards(self.dealer, ra9),
+            inline=False,
+        )
         return embed
 
     def setup_turn(self):
@@ -161,24 +211,27 @@ class Blackjack(commands.Cog):
         return False
 
     def check_result(self):
-        if (self.get_score(self.player) > self.get_score(self.dealer)) and not self.check_edge(self.player):
-            return 'WIN'
+        if (
+            self.get_score(self.player) > self.get_score(self.dealer)
+        ) and not self.check_edge(self.player):
+            return "WIN"
         elif self.get_score(self.player) == self.get_score(self.dealer):
-            return 'PUSH'
+            return "PUSH"
         else:
-            return 'LOSE'
+            return "LOSE"
 
     def check_blackjack(self, ctx_m):
         if self.get_score(self.player, True) == 21:
             if self.get_score(self.dealer, True) == 21:
-                self.embed = self.update_ui(ctx_m, 'BLACKJACK\n PUSH', True)
+                self.embed = self.update_ui(ctx_m, "BLACKJACK\n PUSH", True)
                 self.stop_flag = True
             else:
-                self.embed = self.update_ui(ctx_m, 'BLACKJACK\n WIN', True)
+                self.embed = self.update_ui(ctx_m, "BLACKJACK\n WIN", True)
                 self.stop_flag = True
         elif self.get_score(self.dealer, True) == 21:
-            self.embed = self.update_ui(ctx_m, 'BLACKJACK\n LOSE', True)
+            self.embed = self.update_ui(ctx_m, "BLACKJACK\n LOSE", True)
             self.stop_flag = True
+
 
 def setup(bot):
     bot.add_cog(Blackjack(bot))
