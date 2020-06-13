@@ -1,4 +1,4 @@
-<p align="center" style="float: right; margin: 10px;"><a href="https://top.gg/bot/708690846735663184"><img src="https://top.gg/api/widget/708690846735663184.svg?usernamecolor=000000&topcolor=ffffff"></a></p>
+<p align="center" style="margin: 10px;"><a href="https://top.gg/bot/708690846735663184"><img src="https://top.gg/api/widget/708690846735663184.svg?usernamecolor=000000&topcolor=ffffff"></a></p>
 <p align="center">
     <a href="https://github.com/Ghosteon/discord-bot-kassandra"><img src="https://img.shields.io/badge/deployed%20on-heroku-997fbc?style=flat-square"></a>
     <a href="https://github.com/Ghosteon/discord-bot-kassandra"><img src="https://img.shields.io/badge/python-3.8-blue?style=flat-square"></a>
