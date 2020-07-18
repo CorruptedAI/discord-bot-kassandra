@@ -1,11 +1,13 @@
-import random
-import asyncio
-
 import discord
 from discord.ext import commands
 
+import random
+import asyncio
 
-class Color(commands.Cog):
+from modules.postgresql import SELECT, TICKETS_COINS
+
+
+class Duel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.delay = 0.5
@@ -26,7 +28,23 @@ class Color(commands.Cog):
             self.colors.append(c)
 
     @commands.command()
-    async def colors(self, ctx):
+    @commands.guild_only()
+    @commands.bot_has_permissions(manage_messages=True)
+    async def duel(self, ctx):
+        return await ctx.channel.send(
+            ":x: Duels are currently being reworked and will be available soon"
+        )
+        user = await self.bot.pg_con.fetchrow(SELECT, ctx.author.id, ctx.guild.id)
+
+        if user["tickets"] <= 0:
+            return await ctx.channel.send(
+                f"You do not have enough tickets {TICKETS}. You can purchase them in the `{COMMAND_PREFIX}shop`"
+            )
+        else:
+            await self.bot.pg_con.execute(
+                TICKETS, ctx.author.id, ctx.guild.id, user["tickets"] - 2,
+            )
+
         embed = self.update_ui("3..")
         msg = await ctx.channel.send(embed=embed)
         await msg.edit(embed=embed)
@@ -51,9 +69,9 @@ class Color(commands.Cog):
             return await ctx.channel.send("You took too long. Your frame was closed.")
 
         if checkin.content.lower() == color:
-            await ctx.channel.send("Positive, {0.author.mention}!".format(ctx))
+            await ctx.channel.send(f"Positive, {ctx.author.mention}!")
         else:
-            await ctx.channel.send("Probably not, {0.author.mention}.".format(ctx))
+            await ctx.channel.send(f"Probably not, {ctx.author.mention}.")
 
     def update_ui(self, title_m):
         embed = discord.Embed(title=title_m, color=self.bot.user.color)
@@ -63,4 +81,4 @@ class Color(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Color(bot))
+    bot.add_cog(Duel(bot))

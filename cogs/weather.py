@@ -1,65 +1,63 @@
-import requests
-from datetime import datetime
-
 import discord
 from discord.ext import commands
+
+from settings import load_openweather_token
+from modules.openweather import OpenWeather
+from modules.time import Time
+from bot import COMMAND_PREFIX
 
 
 class Weather(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.api = "http://api.openweathermap.org/data/2.5/weather?appid=6e8d6c451c8bbc61addc2946f4b87ff6&q="
 
-    @commands.command(pass_context=True)
-    async def weather(self, ctx, arg=None):
-        if not arg:
+        self.current_time = Time()
+
+    @commands.command()
+    async def weather(self, ctx, city=None):
+        if not city:
             return await ctx.channel.send(
-                "{0.author.mention}, you forgot to specify the city, try `&weather [city]`".format(
-                    ctx
-                )
+                f":x: You must specify a city, for example`{COMMAND_PREFIX}weather Prague`"
             )
 
-        thunder = requests.get(self.api + arg).json()
-
-        if thunder["cod"] == "404":
+        current_forecast = OpenWeather(load_openweather_token(), city)
+        if current_forecast.get_error():
             return await ctx.channel.send(
-                "{0.author.mention}, I couldn't find this city :flushed:".format(ctx)
+                f":x: Unfortunately, I could not find **{city}**, make sure you entered the city correctly"
             )
 
         embed = discord.Embed(
-            title=thunder["name"],
-            description="**" + thunder["weather"][0]["description"].title() + "**",
+            title=current_forecast.get_name(),
+            description=f"**{current_forecast.get_description().title()}**",
             color=self.bot.user.color,
         )
         embed.add_field(
             name="Temperature",
-            value=str(round(thunder["main"]["temp"] - 273.15, 1)) + " °C",
+            value=f"{round(current_forecast.get_temp('c'), 1)} °C",
             inline=True,
         )
         embed.add_field(
             name="Temperature",
-            value=str(round((thunder["main"]["temp"] - 273.15) * 9 / 5 + 32, 1))
-            + " °F",
+            value=f"{round(current_forecast.get_temp('f'), 1)} °F",
             inline=True,
         )
         embed.add_field(
-            name="Humidity", value=str(thunder["main"]["humidity"]) + " %", inline=False
+            name="Humidity", value=f"{current_forecast.get_humidity()} %", inline=False
         )
         embed.add_field(
-            name="Pressure",
-            value=str(thunder["main"]["pressure"]) + " hpa",
+            name="Cloudiness", value=f"{current_forecast.get_clouds()} %", inline=False
+        )
+        embed.add_field(
+            name="Wind",
+            value=f"{current_forecast.get_wind_speed('k')} km/h",
             inline=False,
         )
-        embed.add_field(
-            name="Cloudiness", value=str(thunder["clouds"]["all"]) + " %", inline=False
-        )
-        embed.add_field(
-            name="Wind", value=str(thunder["wind"]["speed"]) + " m/s", inline=False
-        )
         embed.set_footer(
-            text=datetime.now().strftime("%H:%M:%S\n%d.%m.%Y "),
+            # text=f"{self.current_time.get_short_time()}\n{self.current_time.get_date()}",
+            text=self.current_time.get_date(),
             icon_url=self.bot.user.avatar_url,
         )
+
         await ctx.channel.send(embed=embed)
 
 
