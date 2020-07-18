@@ -18,6 +18,7 @@ class Leaderboard(commands.Cog):
                 """
                 SELECT *
                 FROM users
+                ORDER BY exp DESC
                 """
             )
             pos = 1
@@ -38,7 +39,7 @@ class Leaderboard(commands.Cog):
                 """
                 SELECT *
                 FROM users
-                ORDER BY level DESC
+                ORDER BY exp DESC
                 LIMIT 5
                 """
             )

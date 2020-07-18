@@ -34,7 +34,7 @@ class Admin(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def guilds(self, ctx):
-        await ctx.channel.send(len(self.bot.guilds))
+        await ctx.channel.send(f"Servers: {len(self.bot.guilds)}")
 
 
 def setup(bot):
