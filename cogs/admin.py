@@ -31,6 +31,11 @@ class Admin(commands.Cog):
             f"...DB update completed\n{users} users were added to DB"
         )
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def guilds(self, ctx):
+        await ctx.channel.send(len(self.bot.guilds))
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))
