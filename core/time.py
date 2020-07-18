@@ -1,3 +1,0 @@
-"""
-getting current time
-"""

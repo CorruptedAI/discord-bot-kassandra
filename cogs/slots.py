@@ -1,8 +1,11 @@
+import discord
+from discord.ext import commands
+
 import random
 import asyncio
 
-import discord
-from discord.ext import commands
+from modules.postgresql import SELECT, COINS
+from bot import COMMAND_PREFIX, CHIPS
 
 
 class Slots(commands.Cog):
@@ -21,31 +24,42 @@ class Slots(commands.Cog):
             "\U0001F48E": [0],  # wild     # :gem:
         }
 
-        self.symbols = []
-        for symbol in self.symbols_dict:
-            self.symbols.append(symbol)
-
-        self.DETECT_DUPLICATE = False
+        self.symbols = [symbol for symbol in self.symbols_dict]
 
         self.SPIN = "\U0001F1F8"
-        self.COOKIE = " \U0001F36A"
 
-    @commands.command(pass_context=True, aliases=["s", "slot"])
-    async def slots(self, ctx):
-        if not ctx.guild:
+    @commands.command(aliases=["slot"])
+    @commands.guild_only()
+    @commands.bot_has_permissions(manage_emojis=True, manage_messages=True)
+    async def slots(self, ctx, bet=None):
+        if not bet:
             return await ctx.channel.send(
-                "Sorry, but you can't use this command in DM now. It crashes bot and causes errors. Upcoming update let you do that."
+                f":x: You must enter your bet! Enter `{COMMAND_PREFIX}blackjack [bet]` command and try to play again"
             )
 
-        if self.DETECT_DUPLICATE:
-            return
-        else:
-            self.DETECT_DUPLICATE = True
+        if not bet.isdigit():
+            return await ctx.channel.send(
+                f":x: A bet can only be an integer! Enter `{COMMAND_PREFIX}blackjack [bet]` command and try to play again"
+            )
+
+        self.bet = int(bet)
+
+        self.author_id = ctx.author.id
+        self.guild_id = ctx.guild.id
+
+        self.user = await self.bot.pg_con.fetchrow(
+            SELECT, self.author_id, self.guild_id
+        )
+
+        if self.bet > self.user["coins"]:
+            return await ctx.channel.send(
+                f":x: Not enough chips. Your balance is {self.user['coins']} {CHIPS}. Try to enter a different amount or enter `{COMMAND_PREFIX}daily` command to get a daily reward"
+            )
 
         self.highlighted = []
 
         self.lines = self.generate_line() + self.generate_line() + self.generate_line()
-        self.embed = self.update_ui(ctx, True)
+        self.embed = await self.update_ui(ctx, True)
         self.msg = await ctx.channel.send(embed=self.embed)
         await self.msg.add_reaction(self.SPIN)
         await self.msg.edit(embed=self.embed)
@@ -62,38 +76,59 @@ class Slots(commands.Cog):
                 reaction = await self.bot.wait_for(
                     "reaction_add", check=check_reaction, timeout=90.0
                 )
+
             except asyncio.TimeoutError:
-                self.DETECT_DUPLICATE = False
                 return
 
             if reaction:
+                if self.bet > self.user["coins"]:
+                    return await ctx.channel.send(
+                        f":x: Not enough chips. Your balance is {self.user['coins']} {CHIPS}. Try to change your bet or enter `{COMMAND_PREFIX}daily` command to get a daily reward"
+                    )
+                await self.bot.pg_con.execute(
+                    COINS, self.author_id, self.guild_id, self.user["coins"] - self.bet
+                )
                 self.DELAY = 0.15
                 for i in range(3):
                     self.lines = self.generate_sequence()
-                    self.embed = self.update_ui(ctx)
+                    self.embed = await self.update_ui(ctx)
                     await self.msg.edit(embed=self.embed)
                     self.DELAY += self.DELAY / 10
                     await asyncio.sleep(self.DELAY)
-                self.embed = self.update_ui(ctx, False, True)
+                self.embed = await self.update_ui(ctx, False, True)
                 await self.msg.edit(embed=self.embed)
                 await self.msg.remove_reaction(self.SPIN, ctx.author)
 
-    def update_ui(self, ctx_m, opening=False, ending=False):
+    async def update_ui(self, ctx_m, opening=False, ending=False):
         embed = discord.Embed(title=self.show_reels(), color=ctx_m.author.color)
         embed.set_author(name="Slots", icon_url=ctx_m.author.avatar_url)
+        embed.add_field(name="Bet", value=f"{self.bet} {CHIPS}", inline=True)
+
         if opening:
             embed.set_footer(text="Press S\nto spin", icon_url=self.bot.user.avatar_url)
         else:
             if ending:
+                mul = self.get_multiplier() * self.bet
+
+                await self.bot.pg_con.execute(
+                    COINS, self.author_id, self.guild_id, self.user["coins"] + mul
+                )
+
                 embed.set_footer(
-                    text="WIN\n " + str(self.get_multiplier()) + "x",
-                    icon_url=self.bot.user.avatar_url,
+                    text=f"WIN\n {mul} {CHIPS}", icon_url=self.bot.user.avatar_url,
                 )
                 embed.title = self.show_highlighted_reels()
                 for i, n in enumerate(self.lines):
                     self.lines[i] = self.lines[i].replace("`", "")
             else:
-                embed.set_footer(text="WIN\n 0x", icon_url=self.bot.user.avatar_url)
+                embed.set_footer(text=f"WIN\n\u2060", icon_url=self.bot.user.avatar_url)
+
+        self.user = await self.bot.pg_con.fetchrow(
+            SELECT, self.author_id, self.guild_id
+        )
+        embed.add_field(
+            name="Balance", value=f"{self.user['coins']} {CHIPS}", inline=True
+        )
         return embed
 
     def generate_line(self):

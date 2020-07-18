@@ -1,6 +1,0 @@
-"""
-connecting
-adding
-removing
-etc
-"""

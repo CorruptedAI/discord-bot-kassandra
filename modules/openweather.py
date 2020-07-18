@@ -2,11 +2,13 @@ import requests
 
 
 class OpenWeather:
-    def __init__(self, city, token):
+    def __init__(self, token, city):
         address = "http://api.openweathermap.org/data/2.5/weather?appid="
         self.feelsrainman = requests.get(f"{address}{token}&q={city}").json()
+
+    def get_error(self):
         if self.feelsrainman["cod"] == "404":
-            print("---\ncity not found\n---\n")
+            return True
         elif self.feelsrainman["cod"] == "401":
             print(
                 "---\nInvalid API key. Please see http://openweathermap.org/faq#error401 for more info.\n---\n"
@@ -22,13 +24,13 @@ class OpenWeather:
         return self.feelsrainman["coord"]["lat"]
 
     def get_main(self):
-        return self.feelsrainman["weather"]["0"]["main"]
+        return self.feelsrainman["weather"][0]["main"]
 
     def get_description(self):
-        return self.feelsrainman["weather"]["0"]["description"]
+        return self.feelsrainman["weather"][0]["description"]
 
     def get_icon(self):
-        return self.feelsrainman["weather"]["0"]["icon"]
+        return self.feelsrainman["weather"][0]["icon"]
 
     def get_base(self):
         return self.feelsrainman["weather"]["base"]
@@ -77,39 +79,52 @@ class OpenWeather:
             print("Invalid argument. Only 'k', 'f' and 'c', 'k' as default")
 
     def get_pressure(self):
-        pass
+        return self.feelsrainman["main"]["pressure"]
 
     def get_humidity(self):
-        pass
+        return self.feelsrainman["main"]["humidity"]
 
     def get_visibility(self):
-        pass
+        return self.feelsrainman["visibility"]
 
-    # k - km/h
     # m - m/s
-    def get_wind_speed(self, s="k"):
-        pass
+    # k - km/h
+    def get_wind_speed(self, s="m"):
+        if s == "m":
+            return self.feelsrainman["wind"]["speed"]
+        elif s == "k":
+            return self.feelsrainman["wind"]["speed"] * 3.6
+        else:
+            print("Invalid argument. Only 'm' and 'k', 'm' as default")
 
-    def get_wind_deg(self):
-        pass
+    # d - degree
+    # r - radian
+    def get_wind_deg(self, s="d"):
+        if s == "d":
+            return self.feelsrainman["wind"]["deg"]
+        elif s == "r":
+            PI = 3.141592653589793
+            return self.feelsrainman["wind"]["deg"] * PI / 180
+        else:
+            print("Invalid argument. Only 'd' and 'r', 'd' as default")
 
     def get_clouds(self):
-        pass
+        return self.feelsrainman["clouds"]["all"]
 
-    def get_dt(self):
-        pass
+    def get_data(self):
+        return self.feelsrainman["dt"]
 
     def get_country(self):
-        pass
+        return self.feelsrainman["sys"]["county"]
 
     def get_sunrise(self):
-        pass
+        return self.feelsrainman["sys"]["sunrise"]
 
     def get_sunset(self):
-        pass
+        return self.feelsrainman["sys"]["sunset"]
 
     def get_timezone(self):
-        pass
+        return self.feelsrainman["timezone"]
 
     def get_name(self):
-        pass
+        return self.feelsrainman["name"]
