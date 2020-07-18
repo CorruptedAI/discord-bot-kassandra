@@ -18,8 +18,6 @@ class Leaderboard(commands.Cog):
                 """
                 SELECT *
                 FROM users
-                ORDER BY level DESC
-                LIMIT 5
                 """
             )
             pos = 1
@@ -32,6 +30,7 @@ class Leaderboard(commands.Cog):
                         inline=False,
                     )
                     pos += 1
+                    if pos == 5: break
 
         else:
             embed.title = ":map: Global Leaderboard"
